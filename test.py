@@ -8,7 +8,7 @@ def test(target, bg):
     for i in xrange(configs.dim['x']):
         for j in xrange(configs.dim['y']):
             err += (target[i, j]-bg[i, j])**2
-    return err/(configs.dim['x']*configs.dim['y'])**0.5
+    return (err/(configs.dim['x']*configs.dim['y']))**0.5
 
 if __name__ == '__main__':
     clip = "data/nikwalking.mp4"
