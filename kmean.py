@@ -5,9 +5,8 @@ from sklearn.cluster import KMeans
 import numpy as np
 from config import Config
 
-frames = sampler.getFrames('data/nikwalking.mp4')
-configs = Config(frames.shape)
-print "Frame Dimension: ", frames.shape
+frames = None
+configs = None
 
 def pixelDensity(x, y):
     vec = frames[:,x, y]
@@ -55,26 +54,39 @@ def cluster(x):
 def getBgPixel(vec, labels, bCent, fCent):
     return bCent
 
-def getBg():
+def getBg(clip, cached=None):
     bg = []
-    for i in xrange(configs.dim['x']):
-        for j in xrange(configs.dim['y']):
-            print "Pixel: %i, %i"%(i,j)
-            vec = frames[:, i, j]
 
-            cent, labels = cluster(vec)
-            # probs = probability(vec, cent)
-            bg.append(getBgPixel(vec, labels, cent[0][0], cent[1][0]))
+    frames = sampler.getFrames(clip)
+    configs = Config(frames.shape)
+    print "Frame Dimension: ", frames.shape
 
-    bg = np.array(bg)
-    bg = bg.reshape(configs.dim['x'], configs.dim['y'])
+    if cached == None:
+        for i in xrange(configs.dim['x']):
+            for j in xrange(configs.dim['y']):
+                print "Pixel: %i, %i"%(i,j)
+                vec = frames[:, i, j]
 
-    with open('bin/bg_kmeans_hand.pkl', 'wb') as f:
-        pickle.dump(bg, f)
-    plt.imshow(bg, cmap='gray')
+                cent, labels = cluster(vec)
+                # probs = probability(vec, cent)
+                bg.append(getBgPixel(vec, labels, cent[0][0], cent[1][0]))
+
+        bg = np.array(bg)
+        bg = bg.reshape(configs.dim['x'], configs.dim['y'])
+
+        with open('bin/bg_kmeans_%s.pkl'%clipName.split('/')[-1], 'wb') as f:
+            pickle.dump(bg, f)
+        return bg
+        # plt.imshow(bg, cmap='gray')
+    else:
+        print "!!! Extracting BG from cached files"
+        with open(cached, 'rb') as f:
+            bg = pickle.load(f)
+        return bg
 
 if __name__ == '__main__':
-    getBg()
+    getBg("data/nikwalking.mp4", "bin/k_means_nikwalking.pkl")
+
     # X, Y = 225, 300
     #
     # vec = frames[:,X,Y]
