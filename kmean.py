@@ -15,26 +15,6 @@ def pixelDensity(x, y):
     plt.hist(vec, binwidth, normed=True)
     plt.xlim((min(vec), max(vec)))
 
-    # mean = np.mean(vec)
-    # variance = np.var(vec)
-    # sigma = np.sqrt(variance)
-    # x = np.linspace(min(vec), max(vec), 100)
-    # plt.plot(x, mlab.normpdf(x, mean, sigma))
-
-# def dist(x, y):
-#     return abs(x-y)
-#
-# def probability(vec, centers):
-#     probability = []
-#     c1, c2 = centers[0][0], centers[1][0]
-#     for val in vec:
-#         p1 = 1- dist(val, c1)/(dist(val, c2) + dist(val, c1))
-#         p2 = 1- dist(val, c2)/(dist(val, c2) + dist(val, c1))
-#
-#         probability.append(p1 if p1>p2 else p2)
-#     return probability
-
-
 def cluster(x):
     x = x.reshape(configs.nFrames, 1)
     kmeans = KMeans(n_clusters=2, random_state=0).fit(x)
