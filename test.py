@@ -1,6 +1,6 @@
 import kmean, sampler, math
 from config import Config
-
+import pickle
 frames, configs = None, None
 
 def test(target, bg):
@@ -14,8 +14,11 @@ if __name__ == '__main__':
     clip = "data/nikwalking.mp4"
     cached = "bin/bg_kmeans_nikwalking.pkl"
     targetFrame = 0
-
-    frames = sampler.getFrames(clip)
+    f = open(cached, 'rb')
+    frames = pickle.load(f)
+    f.close()
+    print(frames.shape)    
+#frames = sampler.getFrames(clip)
     configs = Config(frames.shape)
 
     bg = kmean.getBg(clip, cached)
